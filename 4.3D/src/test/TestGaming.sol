@@ -7,11 +7,12 @@ import "../contracts/Gaming.sol";
 contract TestGaming {
     uint public initialBalance = 10 ether;
     Gaming gaming;
-    address payable owner;
+    address payable owner; // Declare a variable to hold the owner's address
 
+     // This function runs before all tests and sets up the contract instance
     function beforeAll() public {
-        gaming = new Gaming();
-        owner = address(uint160(address(this)));
+        gaming = new Gaming(); // Deploy a new instance of the Gaming contract
+        owner = address(uint160(address(this))); // Set the owner to the address of this test contract, ensuring it's payable
     }
 
     function testPlayerWonGuessLower() public {
@@ -42,30 +43,24 @@ contract TestGaming {
         Assert.equal(expected, result, "The player should have lost by guessing the mystery number was higher than their number");
     }
 
-    // Function to test the withdrawFunds functionality
-    function testWithdrawFunds() public {
+   function testWithdrawFunds() public {
         // Fund the game with 10 ether from the owner
-        (bool sent,) = address(gaming).call.value(10 ether)("");
-        require(sent, "Failed to send Ether");
+        address(gaming).transfer(10 ether); // Send 10 ether from the test contract to the Gaming contract
 
-        // Check contract balance
-        uint256 contractBalance = address(gaming).balance;
-        Assert.equal(contractBalance, 10 ether, "Contract should have 10 ether");
+        // Record initial owner balance before withdrawing funds
+        uint256 initialOwnerBalance = owner.balance; // Store the initial balance of the owner (this contract)
 
-        // Record initial owner balance
-        uint256 initialOwnerBalance = owner.balance;
+        // Call the withdrawFunds function on the Gaming contract
+        gaming.withdrawFunds(); // Withdraw the funds from the Gaming contract back to the owner (this contract)
 
-        /**
-            @TODO: this test case does not work as expected
-            it keep reverting the transaction
-            the code below "gaming.withdrawFunds()" is commencted/disabled in order to pass the test
-        **/
-        // gaming.withdrawFunds();
-
-        // Record final owner balance
-        uint256 finalOwnerBalance = owner.balance;
+        // Record final owner balance after withdrawing funds
+        uint256 finalOwnerBalance = owner.balance; // Store the final balance of the owner after withdrawal
 
         // Assert that the owner's balance has increased by 10 ether
-        Assert.equal(finalOwnerBalance, initialOwnerBalance, "Owner balance should have increased by 10 ether");
+        Assert.equal(finalOwnerBalance, initialOwnerBalance + 10 ether, "Owner balance should have increased by 10 ether");
     }
+    
+
+    // Fallback function to allow this contract to receive ether
+    function() external payable {}
 }
