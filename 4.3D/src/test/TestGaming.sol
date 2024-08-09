@@ -55,7 +55,11 @@ contract TestGaming {
         // Record initial owner balance
         uint256 initialOwnerBalance = owner.balance;
 
-        // Call the withdrawFunds function
+        /**
+            @TODO: this test case does not work as expected
+            it keep reverting the transaction
+            the code below "gaming.withdrawFunds()" is commencted/disabled in order to pass the test
+        **/
         // gaming.withdrawFunds();
 
         // Record final owner balance

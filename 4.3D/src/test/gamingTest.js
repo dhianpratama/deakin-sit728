@@ -47,6 +47,10 @@ contract('Gaming', async (accounts) => {
     const finalOwnerBalanceInEther = Number(web3.utils.fromWei(finalOwnerBalance, 'ether'))
 
     // Verify the owner's balance has increased by 10 ether (considering gas costs)
-    assert.isAbove(finalOwnerBalanceInEther, initialOwnerBalanceInEther + 9.9, 'Owner balance should have increased by approximately 10 ether')
+    assert.isAbove(
+      finalOwnerBalanceInEther, 
+      initialOwnerBalanceInEther + 9.9, 
+      'Owner balance should have increased by approximately 10 ether'
+    )
   })
 })
